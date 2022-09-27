@@ -1,0 +1,7 @@
+
+.router-link-active, .router-link-active:active, .router-link-active:visited{
+    color: blue;
+}
+.router-link-active:focus{
+    color: violet;
+}
