@@ -34,7 +34,7 @@
           class="btn btn-link"
           @click="openModal(coach.key_id)"
         >
-          Request
+          Request Coach
         </button>
         <!--modals-->
       </div>
