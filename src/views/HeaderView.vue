@@ -15,7 +15,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
+          <li class="nav-item" >
             <router-link class="nav-link" to="/coaches" aria-current="page"
               >Coach</router-link
             >
@@ -47,27 +47,21 @@
   </nav>
 </template>
 <script>
+import isLoggedInHooks from '../hooks/IsLoggedInHooks.js'
 export default {
   name: "HeaderView",
-  setup() {},
+  setup() {
+    const {isLoggedIn } = isLoggedInHooks();
+    return {
+      isLoggedIn
+    }
+  },
   data() {
     return {
       //isLoggedIn: false
     };
   },
-  computed: {
-    isLoggedIn() {
-      if (
-        this.$store.state.authRoute.idToken &&
-        this.$store.state.authRoute.idToken !== null &&
-        this.$store.state.authRoute.idToken !== ""
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-  },
+  
   created() {
     /*let idToken = JSON.parse(localStorage.getItem('idToken'));
         if(idToken && idToken !== null && idToken !== ''){

@@ -1,14 +1,20 @@
 <template>
-  <header-view v-if="routeName != 'register'"></header-view>
+  <header-view v-if="isLoggedIn"></header-view>
   <RouterView />
 </template>
 <script>
 import HeaderView from "./views/HeaderView.vue";
+import isLoggedInHooks from "./hooks/IsLoggedInHooks.js"
 export default {
   components: {
     HeaderView,
   },
-  setup() {},
+  setup() {
+    const { isLoggedIn } = isLoggedInHooks();
+    return {
+      isLoggedIn
+    }
+  },
   data() {
     return {
       routeName: "",

@@ -19,7 +19,7 @@ const router = createRouter({
       //component: Register
       component: () =>
         import(
-          /*webpackChunkName: 'register-chunk'*/ "../views/auth/Register.vue"
+          /*webpackChunkName: 'register-chunk'*/ "../views/auth/RegisterAnt.vue"
         ),
     },
     {
