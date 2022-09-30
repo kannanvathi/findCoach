@@ -1,5 +1,7 @@
 <template>
   <div class="container mt-3">
+    <!--{{newVar}} {{obj.name}} {{obj.role}}
+    <button class="btn btn-primary" @click="changeState">change state</button>-->
     <div class="row">
       <div class="col-lg-8 offset-lg-2">
         <div class="card">
@@ -38,6 +40,7 @@
   </div>
 </template>
 <script>
+import { reactive, ref } from '@vue/reactivity';
 export default {
   name: "RegisterView",
   data() {
@@ -100,6 +103,19 @@ export default {
       }
     },
   },
+  setup() {
+    let newVar = ref("checking setup");
+    let obj = reactive({
+      name: "bharathi",
+      role: "frontend"
+    })
+    function changeState() {
+      newVar.value = "checked"
+      obj.name = "Bharathi"
+      obj.role = "Fullstack"
+    }
+    return {newVar: newVar, changeState: changeState, obj: obj}
+  }
 };
 </script>
 <style scoped></style>

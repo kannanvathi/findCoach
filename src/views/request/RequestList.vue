@@ -1,6 +1,11 @@
 <template>
   <div class="container">
     <div class="row">
+      <div class="col-lg-3 offset-lg-9">
+        <input type="text" class="form-control" v-model="searchQuery">
+      </div>
+    </div>
+    <div class="row">
       <div class="col-lg-4 mt-3" v-for="request in requests" :key="request.id">
         <div class="card">
           <div class="card-header">
@@ -24,13 +29,24 @@
   </div>
 </template>
 <script>
+import { ref, watch } from '@vue/runtime-core';
+import requestHooks from "../../hooks/RequestsHooks.js"
 export default {
-  computed: {
+  /*computed: {
     requests() {
       return this.$store.state.coachRoute.requests;
     },
+  },*/
+  setup() {
+   
+    let { requests, searchQuery } = requestHooks();
+    
+    
+    return {
+      requests,
+      searchQuery,
+    }
   },
-  setup() {},
   created() {
     this.$store.dispatch("coachRoute/getRequests");
   },

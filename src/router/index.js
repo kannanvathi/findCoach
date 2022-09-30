@@ -98,6 +98,14 @@ const router = createRouter({
         }
       },
     },
+    {
+      path: "/google-calender",
+      name: "google-calender",
+      component: () =>
+        import(
+          /*webpackChunkName: 'google-calender-chunk'*/ "../views/calender/GoogleCalender.vue"
+        ),
+    },
   ],
 });
 router.beforeEach((to, from, next) => {
