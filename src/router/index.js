@@ -23,6 +23,74 @@ const router = createRouter({
         ),
     },
     {
+      path: "/app-list",
+      name: "app-list",
+      component: () =>
+        import(/*webpackChunkName: 'app-list-chunk'*/ "../views/AppList.vue"),
+    },
+    {
+      path: "/quiz-app",
+      name: "quiz-app",
+      beforeEnter(to, from, next) {
+        const idToken = JSON.parse(localStorage.getItem("idToken"));
+        const appName = store.state.authRoute.appName;
+        if (
+          idToken &&
+          idToken != "" &&
+          idToken != null &&
+          appName === "quiz-app"
+        ) {
+          next(true);
+        } else if (
+          idToken &&
+          idToken != "" &&
+          idToken != null &&
+          appName !== "quiz-app"
+        ) {
+          router.push({ name: "app-list" });
+        } else {
+          router.push({ name: "register" });
+        }
+      },
+      component: () =>
+        import(
+          /*webpackChunkName: 'quiz-Base-chunk'*/ "../views/quiz/QuizBase.vue"
+        ),
+      children: [
+        {
+          path: "quiz-list",
+          name: "quiz-list",
+          component: () => import(/* */ "../views/quiz/QuizList.vue"),
+          children: [
+            {
+              path: "edit",
+              name: "quiz-edit",
+              component: () =>
+                import(
+                  /*webpackChunkName: 'quiz-form-chunk'*/ "../views/quiz/QuizForm.vue"
+                ),
+            },
+            {
+              path: "view",
+              name: "quiz-view",
+              component: () =>
+                import(
+                  /*webpackChunkName: 'quiz-view-chunk'*/ "../views/quiz/QuizView.vue"
+                ),
+            },
+          ],
+        },
+        {
+          path: "create",
+          name: "quiz-create",
+          component: () =>
+            import(
+              /*webpackChunkName: 'quiz-form-chunk'*/ "../views/quiz/QuizForm.vue"
+            ),
+        },
+      ],
+    },
+    {
       path: "/coaches",
       name: "coach-list",
       // route level code-splitting
@@ -34,9 +102,22 @@ const router = createRouter({
         ),
       beforeEnter(to, from, next) {
         const idToken = JSON.parse(localStorage.getItem("idToken"));
-        console.log(store.state.authRoute.expiresIn);
-        if (idToken && idToken != "" && idToken != null) {
+        const appName = store.state.authRoute.appName;
+        console.log(appName);
+        if (
+          idToken &&
+          idToken != "" &&
+          idToken != null &&
+          appName === "coach-list"
+        ) {
           next(true);
+        } else if (
+          idToken &&
+          idToken != "" &&
+          idToken != null &&
+          appName !== "coach-list"
+        ) {
+          router.push({ name: "app-list" });
         } else {
           router.push({ name: "register" });
         }

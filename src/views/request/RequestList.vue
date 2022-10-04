@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-3 offset-lg-9">
-        <input type="text" class="form-control" v-model="searchQuery">
+        <input type="text" class="form-control" v-model="searchQuery" />
       </div>
     </div>
     <div class="row">
@@ -29,8 +29,8 @@
   </div>
 </template>
 <script>
-import { ref, watch } from '@vue/runtime-core';
-import requestHooks from "../../hooks/RequestsHooks.js"
+import { ref, watch } from "vue";
+import requestHooks from "../../hooks/RequestsHooks.js";
 export default {
   /*computed: {
     requests() {
@@ -38,14 +38,12 @@ export default {
     },
   },*/
   setup() {
-   
     let { requests, searchQuery } = requestHooks();
-    
-    
+
     return {
       requests,
       searchQuery,
-    }
+    };
   },
   created() {
     this.$store.dispatch("coachRoute/getRequests");

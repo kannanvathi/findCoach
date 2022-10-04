@@ -8,6 +8,7 @@ const authRoute = {
     idToken: "",
     localId: "",
     expiresInTime: null,
+    appName: "",
   },
   mutations: {
     setUser(state, payload) {
@@ -20,7 +21,11 @@ const authRoute = {
       state.expiresIn = "";
       state.idToken = "";
       state.localId = "";
+      state.appName = "coach-list";
       state.expiresInTime = null;
+    },
+    appName(state, appName) {
+      state.appName = appName;
     },
   },
   getters: {
@@ -77,6 +82,7 @@ const authRoute = {
       localStorage.removeItem("idToken");
       localStorage.removeItem("localId");
       localStorage.removeItem("expiresInTime");
+      localStorage.removeItem("appName_id");
       context.commit("removeUser");
     },
     autoLogout(context) {
@@ -86,6 +92,7 @@ const authRoute = {
         localStorage.removeItem("idToken");
         localStorage.removeItem("localId");
         localStorage.removeItem("expiresInTime");
+        localStorage.removeItem("appName_id");
         context.commit("removeUser");
       }, Number(context.expiresIn) * 1000);
       /*let currentDate = new Date();
@@ -129,14 +136,13 @@ const authRoute = {
               res.statusText = "Login Successfully";
               resolve(res);
               setTimeout(() => {
-                console.log("setTimeout", context.state.expiresIn);
                 localStorage.removeItem("expiresIn");
                 localStorage.removeItem("idToken");
                 localStorage.removeItem("localId");
                 localStorage.removeItem("expiresInTime");
+                localStorage.removeItem("appName_id");
                 context.commit("removeUser");
-                console.log(router);
-                router.push({ name: "register" });
+                router.push({ name: "app-list" });
               }, Number(context.state.expiresIn) * 1000);
             }
           })
@@ -144,6 +150,37 @@ const authRoute = {
             reject(error.response.data);
           });
       });
+    },
+    async setApp(context, appName) {
+      let key_id = null;
+      let idToken = context.state.idToken;
+      if (
+        localStorage.getItem("appName_id") === null ||
+        context.state.appName !== appName
+      ) {
+        await axios
+          .post(
+            "https://vue-backend-e8de7-default-rtdb.firebaseio.com/currentApp.json?auth=" +
+              idToken,
+            { appName: appName }
+          )
+          .then((res) => {
+            key_id = res.data.name;
+            localStorage.setItem("appName_id", JSON.stringify(key_id));
+            context.commit("appName", appName);
+          });
+      } else {
+        let id = JSON.parse(localStorage.getItem("appName_id"));
+        await axios
+          .get(
+            "https://vue-backend-e8de7-default-rtdb.firebaseio.com/currentApp/" +
+              `${id}.json`
+          )
+          .then((res) => {
+            let appName = res.data.appName;
+            context.commit("appName", appName);
+          });
+      }
     },
   },
   modules: {},

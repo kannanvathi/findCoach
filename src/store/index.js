@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import coachRoute from "./coach";
 import authRoute from "./auth";
+import quizRoute from "./quiz";
 
 export default createStore({
   state: {},
@@ -9,5 +10,6 @@ export default createStore({
   modules: {
     coachRoute: coachRoute,
     authRoute: authRoute,
+    quizRoute: quizRoute,
   },
 });

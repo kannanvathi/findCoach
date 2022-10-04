@@ -40,7 +40,7 @@
   </div>
 </template>
 <script>
-import { reactive, ref } from '@vue/reactivity';
+import { reactive, ref } from "vue";
 export default {
   name: "RegisterView",
   data() {
@@ -107,15 +107,15 @@ export default {
     let newVar = ref("checking setup");
     let obj = reactive({
       name: "bharathi",
-      role: "frontend"
-    })
+      role: "frontend",
+    });
     function changeState() {
-      newVar.value = "checked"
-      obj.name = "Bharathi"
-      obj.role = "Fullstack"
+      newVar.value = "checked";
+      obj.name = "Bharathi";
+      obj.role = "Fullstack";
     }
-    return {newVar: newVar, changeState: changeState, obj: obj}
-  }
+    return { newVar: newVar, changeState: changeState, obj: obj };
+  },
 };
 </script>
 <style scoped></style>

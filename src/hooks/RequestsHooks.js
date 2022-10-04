@@ -1,4 +1,4 @@
-import { computed } from "@vue/runtime-core";
+import { computed } from "vue";
 import { ref } from "vue";
 //import useStore from '../../store/index.js';
 import { useStore } from "vuex";

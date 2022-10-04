@@ -13,7 +13,6 @@
             </div>
         </div>
     </div>
-       
     <a-row class="mt-3">
         <a-col :span="6"></a-col>
         <a-col :span="12">
@@ -92,7 +91,7 @@ export default defineComponent({
             console.log(res);
             formState.email = ''
             formState.password = ''
-            router.push({ name: "coach-list" });
+            router.push({ name: "app-list" });
           })
           .catch((error) => {
             console.log(error);
@@ -107,7 +106,7 @@ export default defineComponent({
             console.log(res);
             formState.email = ''
             formState.password = ''
-            router.push({ name: "coach-list" });
+            router.push({ name: "app-list" });
           })
           .catch((error) => {
             console.log(error);

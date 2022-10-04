@@ -4,7 +4,7 @@
 </template>
 <script>
 import HeaderView from "./views/HeaderView.vue";
-import isLoggedInHooks from "./hooks/IsLoggedInHooks.js"
+import isLoggedInHooks from "./hooks/IsLoggedInHooks.js";
 export default {
   components: {
     HeaderView,
@@ -12,8 +12,8 @@ export default {
   setup() {
     const { isLoggedIn } = isLoggedInHooks();
     return {
-      isLoggedIn
-    }
+      isLoggedIn,
+    };
   },
   data() {
     return {
@@ -23,6 +23,8 @@ export default {
   created() {
     this.routeName = this.$route.name;
     this.$store.dispatch("authRoute/autoCredential");
+    if(JSON.parse(localStorage.getItem('appName_id')) !== null)
+    this.$store.dispatch("authRoute/setApp", this.$store.state.authRoute.appName);
   },
   methods: {},
 };

@@ -18,7 +18,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-lg-3 offset-lg-9">
-              <input type="text" class="form-control" v-model="searchQuery">
+              <input type="text" class="form-control" v-model="searchQuery" />
             </div>
           </div>
           <div class="row">
@@ -40,7 +40,7 @@
 </template>
 <script>
 import CoachItem from "./CoachItem.vue";
-import coachesHooks from "../../hooks/CoachesHooks.js"
+import coachesHooks from "../../hooks/CoachesHooks.js";
 export default {
   components: {
     CoachItem,
@@ -51,15 +51,22 @@ export default {
     };
   },
   setup() {
-    const { coachView, coachEdit, coachDelete, openModal, coaches, searchQuery } = coachesHooks()
+    const {
+      coachView,
+      coachEdit,
+      coachDelete,
+      openModal,
+      coaches,
+      searchQuery,
+    } = coachesHooks();
     return {
       coachView,
       coachEdit,
       coachDelete,
       openModal,
       coaches,
-      searchQuery
-    }
+      searchQuery,
+    };
   },
   created() {
     this.$store.dispatch("coachRoute/getCoaches");

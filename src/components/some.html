@@ -234,5 +234,13 @@
     cutTheSticks([
       4, 3, 5, 343, 3434, 2423, 2, 6, 1, 12, 42, 32, 23, 23, 12, 11,
     ]);
+
+    (function (a) {
+      return (function () {
+        console.log(a);
+        a = 21;
+        console.log(a);
+      })();
+    })(10);
   </script>
 </html>
