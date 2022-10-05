@@ -63,7 +63,7 @@ const router = createRouter({
           component: () => import(/* */ "../views/quiz/QuizList.vue"),
           children: [
             {
-              path: "edit",
+              path: "edit/:id",
               name: "quiz-edit",
               component: () =>
                 import(
@@ -71,7 +71,7 @@ const router = createRouter({
                 ),
             },
             {
-              path: "view",
+              path: "view/:id",
               name: "quiz-view",
               component: () =>
                 import(

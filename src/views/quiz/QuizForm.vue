@@ -87,7 +87,7 @@
         >Add Question</a-button
       >
       <a-button type="primary" html-type="submit" @click="submitForm"
-        >Submit</a-button
+        >{{btnText}}</a-button
       >
       <a-button style="margin-left: 10px" @click="resetForm">Reset</a-button>
     </a-form-item>
@@ -98,6 +98,8 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons-vue";
 import { defineComponent, reactive, ref } from "vue";
 import type { FormInstance } from "ant-design-vue";
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+
 interface Option {
   value: string;
   key: number;
@@ -116,6 +118,7 @@ export default defineComponent({
   },
   setup() {
       const store = useStore();
+      const router = useRouter();
     const formRef = ref<FormInstance>();
     const formItemLayout = {
       labelCol: {
@@ -133,6 +136,8 @@ export default defineComponent({
         sm: { span: 20, offset: 4 },
       },
     };
+    const mode = ref('create');
+    
     const dynamicValidateForm = reactive<{ name: string; quizzes: Quiz[] }>({
       name: "",
       quizzes: [
@@ -149,6 +154,23 @@ export default defineComponent({
         },
       ],
     });
+    const btnText = ref('Submit');
+    const userId = ref('')
+    function onload() {
+      let db_key_id = router.currentRoute.value.params.id;
+      if(db_key_id){
+        console.log(db_key_id);
+        mode.value = 'edit';
+        store.dispatch("quizRoute/getQuiz", db_key_id).then(res => {
+          dynamicValidateForm.name = res.name;
+          dynamicValidateForm.quizzes = res.quizzes;
+          btnText.value = "Update"
+          userId.value = res.userId;
+        })
+      }
+      
+    }
+    onload();
     const addQuestion = () => {
       formRef.value.validate().then(() => {
         dynamicValidateForm.quizzes.push({
@@ -165,14 +187,25 @@ export default defineComponent({
       });
     };
     const submitForm = () => {
-        
       formRef.value
         .validate()
         .then(() => {
+          if(mode.value === 'create'){
             store.dispatch('quizRoute/saveQuizzes', {name: dynamicValidateForm.name, quizzes: dynamicValidateForm.quizzes}).then(res => {
-                console.log(res);
+                //formRef.value.resetFields();
+                router.push({name: 'quiz-list'});
+            }).catch(error => {
+              console.log(error);
             })
-          formRef.value.resetFields();
+          }
+          else{
+            store.dispatch('quizRoute/updateQuiz', {db_key_id: router.currentRoute.value.params.id, name: dynamicValidateForm.name, quizzes: dynamicValidateForm.quizzes, userId: userId.value}).then(res => {
+                router.push({name:'quiz-list'})
+            }).catch(error => {
+              console.log(error);
+            })
+          }
+            
         })
         .catch((error) => {
           console.log("error", error);
@@ -206,6 +239,7 @@ export default defineComponent({
       removeOption,
       addOption,
       addQuestion,
+      btnText
     };
   },
 });

@@ -23,7 +23,7 @@
         </div>
       </button>
     </h2>
-    <div
+    <!--<div
       :id="'collapse_' + quiz_index"
       class="accordion-collapse collapse show"
       :aria-labelledby="index"
@@ -43,7 +43,7 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div>-->
   </div>
 </template>
 <script>

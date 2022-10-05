@@ -24,25 +24,39 @@ const quizRoute = {
     },
   },
   actions: {
-    async saveQuizzes(context, quizzesContainer) {
+    saveQuizzes(context, quizzesContainer) {
       let result;
       let idToken = context.rootGetters["authRoute/idToken"];
       let localId = context.rootGetters["authRoute/localId"];
-      await axios
-        .post(
-          "https://vue-backend-e8de7-default-rtdb.firebaseio.com/quizzes.json?auth=" +
-            idToken,
-          {
-            name: quizzesContainer.name,
-            quizzes: quizzesContainer.quizzes,
-            userId: localId,
-          }
-        )
-        .then((res) => {
-          console.log(res.data);
-          result = res.data;
-        });
-      return result;
+      return new Promise((resolve, reject) => {
+        axios
+          .post(
+            "https://vue-backend-e8de7-default-rtdb.firebaseio.com/quizzes.json?auth=" +
+              idToken,
+            {
+              name: quizzesContainer.name,
+              quizzes: quizzesContainer.quizzes,
+              userId: localId,
+            }
+          )
+          .then((res) => {
+            let updatedQuizzes = context.state.quizzes;
+
+            updatedQuizzes.push({
+              db_key_id: res.data.name,
+              name: quizzesContainer.name,
+              quizzes: quizzesContainer.quizzes,
+              userId: localId,
+            });
+
+            context.commit("quizzes", updatedQuizzes);
+
+            resolve(res);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
     },
     getQuizzes(context) {
       axios
@@ -113,6 +127,59 @@ const quizRoute = {
           )
           .then((res) => {
             console.log(res.data);
+
+            resolve(res);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    updateQuiz(context, updateData) {
+      return new Promise((resolve, reject) => {
+        let idToken = context.rootGetters["authRoute/idToken"];
+        axios
+          .put(
+            `https://vue-backend-e8de7-default-rtdb.firebaseio.com/quizzes/${updateData.db_key_id}.json?auth=` +
+              idToken,
+            {
+              name: updateData.name,
+              quizzes: updateData.quizzes,
+              userId: updateData.userId,
+            }
+          )
+          .then((res) => {
+            let updatedQuizzes = context.state.quizzes;
+            updatedQuizzes.forEach((quiz, index) => {
+              if (quiz.db_key_id === updateData.db_key_id) {
+                updatedQuizzes[index] = {
+                  name: res.data.name,
+                  quizzes: res.data.quizzes,
+                  db_key_id: updateData.db_key_id,
+                  userId: res.data.userId,
+                };
+              }
+            });
+            context.commit("quizzes", updatedQuizzes);
+            resolve(res);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    deleteQuiz(context, db_key_id) {
+      return new Promise((resolve, reject) => {
+        let idToken = context.rootGetters["authRoute/idToken"];
+        axios
+          .delete(
+            `https://vue-backend-e8de7-default-rtdb.firebaseio.com/quizzes/${db_key_id}.json?auth=` +
+              idToken
+          )
+          .then((res) => {
+            let quizzes = context.state.quizzes;
+            quizzes = quizzes.filter((quizC) => quizC.db_key_id !== db_key_id);
+            context.commit("quizzes", quizzes);
             resolve(res);
           })
           .catch((error) => {

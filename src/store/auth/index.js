@@ -83,6 +83,7 @@ const authRoute = {
       localStorage.removeItem("localId");
       localStorage.removeItem("expiresInTime");
       localStorage.removeItem("appName_id");
+      localStorage.removeItem("appName");
       context.commit("removeUser");
     },
     autoLogout(context) {
@@ -93,6 +94,7 @@ const authRoute = {
         localStorage.removeItem("localId");
         localStorage.removeItem("expiresInTime");
         localStorage.removeItem("appName_id");
+        localStorage.removeItem("appName");
         context.commit("removeUser");
       }, Number(context.expiresIn) * 1000);
       /*let currentDate = new Date();
@@ -141,6 +143,7 @@ const authRoute = {
                 localStorage.removeItem("localId");
                 localStorage.removeItem("expiresInTime");
                 localStorage.removeItem("appName_id");
+                localStorage.removeItem("appName");
                 context.commit("removeUser");
                 router.push({ name: "app-list" });
               }, Number(context.state.expiresIn) * 1000);
@@ -167,11 +170,15 @@ const authRoute = {
           .then((res) => {
             key_id = res.data.name;
             localStorage.setItem("appName_id", JSON.stringify(key_id));
+            localStorage.setItem("appName", JSON.stringify(appName));
             context.commit("appName", appName);
           });
       } else {
         let id = JSON.parse(localStorage.getItem("appName_id"));
-        await axios
+        let lAppName = JSON.parse(localStorage.getItem("appName"));
+        context.commit("appName", lAppName);
+
+        /*await axios
           .get(
             "https://vue-backend-e8de7-default-rtdb.firebaseio.com/currentApp/" +
               `${id}.json`
@@ -179,7 +186,7 @@ const authRoute = {
           .then((res) => {
             let appName = res.data.appName;
             context.commit("appName", appName);
-          });
+          });*/
       }
     },
   },

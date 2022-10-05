@@ -53,9 +53,9 @@ export default defineComponent({
     function navigateApp() {
         store.dispatch("authRoute/setApp", appName.value).then((res) => {
           if (appName.value === "quiz-app") {
-            store.dispatch("quizRoute/getQuizzes").then((res) => {
+            //store.dispatch("quizRoute/getQuizzes").then((res) => {
               router.push({ name: "quiz-list" });
-            });
+            //});
           } else router.push({ name: appName.value });
         });
       

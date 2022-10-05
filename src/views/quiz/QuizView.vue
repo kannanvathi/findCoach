@@ -59,6 +59,7 @@ export default {
     }
   },
   mounted() {
+    this.$store.dispatch("quizRoute/getQuiz", this.$route.params.id)
   },
   methods: {
     quizSubmit() {
