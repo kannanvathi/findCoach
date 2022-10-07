@@ -1,5 +1,6 @@
 import axios from "axios";
 import router from "../../router/index.js";
+import config from "../../config.js";
 
 const authRoute = {
   namespaced: true,
@@ -9,6 +10,8 @@ const authRoute = {
     localId: "",
     expiresInTime: null,
     appName: "",
+    laravelUser: {},
+    authorisation: {},
   },
   mutations: {
     setUser(state, payload) {
@@ -16,6 +19,8 @@ const authRoute = {
       state.idToken = payload.idToken;
       state.localId = payload.localId;
       state.expiresInTime = payload.expiresInTime;
+      state.authorisation = payload.authorisation;
+      state.laravelUser = payload.laravelUser;
     },
     removeUser(state) {
       state.expiresIn = "";
@@ -23,9 +28,17 @@ const authRoute = {
       state.localId = "";
       state.appName = "coach-list";
       state.expiresInTime = null;
+      state.laravelUser = {};
+      state.authorisation = {};
     },
     appName(state, appName) {
       state.appName = appName;
+    },
+    laravelUser(state, payload) {
+      state.laravelUser = payload;
+    },
+    authorisation(state, payload) {
+      state.authorisation = payload;
     },
   },
   getters: {
@@ -75,16 +88,35 @@ const authRoute = {
         idToken: JSON.parse(localStorage.getItem("idToken")),
         localId: JSON.parse(localStorage.getItem("localId")),
         expiresInTime: JSON.parse(localStorage.getItem("expiresInTime")),
+        authorisation: JSON.parse(localStorage.getItem("authorisation")),
+        laravelUser: JSON.parse(localStorage.getItem("laravelUser")),
       });
     },
     logout(context) {
-      localStorage.removeItem("expiresIn");
-      localStorage.removeItem("idToken");
-      localStorage.removeItem("localId");
-      localStorage.removeItem("expiresInTime");
-      localStorage.removeItem("appName_id");
-      localStorage.removeItem("appName");
-      context.commit("removeUser");
+      let token = context.state.authorisation.token;
+      let bearer = context.state.authorisation.bearer;
+      console.log(config.getHeaders(token, bearer));
+      return new Promise((resolve, reject) => {
+        axios
+          .post(
+            import.meta.env.VITE_BASE_URL + "logout",
+            {},
+            config.getHeaders(token, bearer)
+          )
+          .then((res) => {
+            localStorage.removeItem("expiresIn");
+            localStorage.removeItem("idToken");
+            localStorage.removeItem("localId");
+            localStorage.removeItem("expiresInTime");
+            localStorage.removeItem("appName_id");
+            localStorage.removeItem("appName");
+            localStorage.removeItem("laravelUser");
+            localStorage.removeItem("authorisation");
+            context.commit("removeUser");
+            resolve(res);
+          })
+          .catch((error) => reject(error));
+      });
     },
     autoLogout(context) {
       //console.log(context);
@@ -95,6 +127,8 @@ const authRoute = {
         localStorage.removeItem("expiresInTime");
         localStorage.removeItem("appName_id");
         localStorage.removeItem("appName");
+        localStorage.removeItem("laravelUser");
+        localStorage.removeItem("authorisation");
         context.commit("removeUser");
       }, Number(context.expiresIn) * 1000);
       /*let currentDate = new Date();
@@ -144,9 +178,38 @@ const authRoute = {
                 localStorage.removeItem("expiresInTime");
                 localStorage.removeItem("appName_id");
                 localStorage.removeItem("appName");
+                localStorage.removeItem("laravelUser");
+                localStorage.removeItem("authorisation");
                 context.commit("removeUser");
                 router.push({ name: "app-list" });
               }, Number(context.state.expiresIn) * 1000);
+
+              return new Promise((resolve, reject) => {
+                axios
+                  .post(import.meta.env.VITE_BASE_URL + "login", {
+                    email: user.email,
+                    password: user.password,
+                  })
+                  .then((res) => {
+                    //console.log(res.data.authorisation, res.data.user);
+                    context.commit("laravelUser", res.data.user);
+                    context.commit("authorisation", res.data.authorisation);
+                    localStorage.setItem(
+                      "laravelUser",
+                      JSON.stringify(res.data.user)
+                    );
+                    localStorage.setItem(
+                      "authorisation",
+                      JSON.stringify(res.data.authorisation)
+                    );
+
+                    resolve(res);
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                    reject(error);
+                  });
+              });
             }
           })
           .catch((error) => {
@@ -188,6 +251,21 @@ const authRoute = {
             context.commit("appName", appName);
           });*/
       }
+    },
+    getUsers(context) {
+      return new Promise((resolve, reject) => {
+        let token = context.state.authorisation.token;
+        let bearer = context.state.authorisation.type;
+        axios
+          .get(
+            import.meta.env.VITE_BASE_URL + "users",
+            config.getHeaders(token, bearer)
+          )
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((error) => reject(error));
+      });
     },
   },
   modules: {},

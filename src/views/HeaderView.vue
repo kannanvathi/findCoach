@@ -30,11 +30,7 @@
             </li>
           </template>
 
-          <!--<li class="nav-item">
-            <router-link class="nav-link" to="/google-calender" aria-current="page"
-              >Calender</router-link
-            >
-          </li>-->
+          
           <template
             v-else-if="appName=== 'quiz-app'"
           >
@@ -49,11 +45,14 @@
                 >
               </li>
           </template>
+          <li class="nav-item">
+            <button class="btn btn-link" @click="getUsers()">Get users</button>
+          </li>
         </ul>
         <ul class="d-flex">
           <li class="nav-link">
             <button
-              class="btn btn-secondary"
+              class="btn btn-link"
               @click="logout()"
               v-if="isLoggedIn"
             >
@@ -104,6 +103,11 @@ export default {
     console.log(this.isLoggedIn);
   },
   methods: {
+    getUsers() {
+      this.$store.dispatch("authRoute/getUsers").then(res => {
+        console.log(res);
+      }).catch(error => console.log(error));
+    },  
     logout() {
       this.$store.dispatch("authRoute/logout").then((res) => {
         console.log(res);
