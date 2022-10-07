@@ -53,34 +53,77 @@ const authRoute = {
     },
   },
   actions: {
-    async saveUser(context, user) {
-      await axios
-        .post(
-          "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDc3PunQfVuw1b21TW7Wp31KGr2Oc_twy4",
-          {
-            email: user.email,
-            password: user.password,
-            returnSecureToken: true,
-          }
-        )
-        .then((res) => {
-          let date = new Date();
-          let expiresInTime = date.getTime() + res.data.expiresIn * 1000;
-          const payload = {
-            expiresIn: res.data.expiresIn,
-            idToken: res.data.idToken,
-            localId: res.data.localId,
-            expiresInTime: expiresInTime,
-          };
-          context.commit("setUser", payload);
-          localStorage.setItem("expiresIn", JSON.stringify(res.data.expiresIn));
-          localStorage.setItem("idToken", JSON.stringify(res.data.idToken));
-          localStorage.setItem("localId", JSON.stringify(res.data.localId));
-          localStorage.setItem("expiresInTime", JSON.stringify(expiresInTime));
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    saveUser(context, user) {
+      return new Promise((reslove, reject) => {
+        axios
+          .post(
+            "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDc3PunQfVuw1b21TW7Wp31KGr2Oc_twy4",
+            {
+              email: user.email,
+              password: user.password,
+              returnSecureToken: true,
+            }
+          )
+          .then((res) => {
+            const expiresIn = res.data.expiresIn;
+            const idToken = res.data.idToken;
+            const localId = res.data.localId;
+            let date = new Date();
+            const expiresInTime = date.getTime() + res.data.expiresIn * 1000;
+            reslove(res);
+            return new Promise((resolve, reject) => {
+              axios
+                .post(import.meta.env.VITE_BASE_URL + "register", {
+                  name: "dummy",
+                  email: user.email,
+                  password: user.password,
+                })
+                .then((res) => {
+                  const authorisation = res.data.authorisation;
+                  const laravelUser = res.data.laravelUser;
+                  const payload = {
+                    expiresIn: expiresIn,
+                    idToken: idToken,
+                    localId: localId,
+                    expiresInTime: expiresInTime,
+                    authorisation: authorisation,
+                    laravelUser: laravelUser,
+                  };
+                  context.commit("setUser", payload);
+                  localStorage.setItem(
+                    "expiresIn",
+                    JSON.stringify(res.data.expiresIn)
+                  );
+                  localStorage.setItem(
+                    "idToken",
+                    JSON.stringify(res.data.idToken)
+                  );
+                  localStorage.setItem(
+                    "localId",
+                    JSON.stringify(res.data.localId)
+                  );
+                  localStorage.setItem(
+                    "expiresInTime",
+                    JSON.stringify(expiresInTime)
+                  );
+                  localStorage.setItem(
+                    "token",
+                    JSON.stringify(authorisation.token)
+                  );
+                  localStorage.setItem(
+                    "laravelUser",
+                    JSON.stringify(laravelUser)
+                  );
+                  resolve(res);
+                })
+                .catch((error) => reject(error));
+            });
+          })
+          .catch((error) => {
+            reject(error);
+            console.log(error);
+          });
+      });
     },
     autoCredential(context) {
       context.commit("setUser", {

@@ -94,7 +94,8 @@ export default defineComponent({
             router.push({ name: "app-list" });
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
+             message.value = error.response.data.error.message.toLowerCase().replaceAll("_", " ");
           });
       } else {
         store
