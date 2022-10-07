@@ -138,6 +138,7 @@ const authRoute = {
       }*/
     },
     login(context, user) {
+      console.log(import.meta.env.VITE_BASE_URL + "login");
       return new Promise((resolve, reject) => {
         axios
           .post(
