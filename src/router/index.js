@@ -88,6 +88,14 @@ const router = createRouter({
               /*webpackChunkName: 'quiz-form-chunk'*/ "../views/quiz/QuizForm.vue"
             ),
         },
+        {
+          path: "random-quiz",
+          name: "random-quiz",
+          component: () =>
+            import(
+              /*webpackChunkName: 'random-quiz-chunk'*/ "../views/quiz/RandomQuiz.vue"
+            ),
+        },
       ],
     },
     {

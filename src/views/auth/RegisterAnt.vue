@@ -60,6 +60,7 @@ interface FormState {
   email: string;
   password: string;
 }
+
 export default defineComponent({
   setup() {
       const store = useStore();

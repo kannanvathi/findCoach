@@ -9,6 +9,9 @@ export default {
   components: {
     HeaderView,
   },
+  computed: {
+   
+  },
   setup() {
     const { isLoggedIn } = isLoggedInHooks();
     return {
@@ -21,6 +24,7 @@ export default {
     };
   },
   created() {
+    
     this.routeName = this.$route.name;
     this.$store.dispatch("authRoute/autoCredential");
     if(JSON.parse(localStorage.getItem('appName_id')) !== null)

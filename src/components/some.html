@@ -242,5 +242,37 @@
         console.log(a);
       })();
     })(10);
+
+    function appendAndDelete(s, t, k) {
+      if (k > t.length) {
+        console.log("yes");
+        return "Yes";
+      }
+      for (let i = 0; i <= Math.min(s.length, t.length); i++) {
+        if (s[i] !== t[i] || t.length === i) {
+          let remainingK = k - i;
+          let remainingT;
+          if (k - i === 0) {
+            remainingT = t.length - i;
+          } else {
+            remainingT = t.length - (i + 1);
+          }
+          if (remainingT < remainingK) {
+            console.log("YES");
+            return "Yes";
+          } else {
+            console.log("NO");
+            return "No";
+          }
+        }
+      }
+      /*let o = s.length + t.length;
+      if (k > o) return "Yes";
+      for (let i = 0, l = Math.min(s.length, t.length); i < l; i++, o -= 2) {
+        if (s[i] !== t[i]) break;
+      }
+      return o > k || (k - o) % 2 !== 0 ? "No" : "Yes";*/
+    }
+    //appendAndDelete("hackerhappy", "hackerrank", 9);
   </script>
 </html>

@@ -44,6 +44,11 @@
                   >Create Quiz</router-link
                 >
               </li>
+              <li class="nav-item">
+                <router-link class="nav-link" to="/quiz-app/random-quiz" aria-current="page"
+                  >Play Random Quiz</router-link
+                >
+              </li>
           </template>
           <li class="nav-item">
             <button class="btn btn-link" @click="getUsers()">Get users</button>

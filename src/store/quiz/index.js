@@ -1,4 +1,6 @@
+import { context } from "ant-design-vue/lib/vc-image/src/PreviewGroup";
 import axios from "axios";
+import config from "../../config.js";
 
 const quizRoute = {
   namespaced: true,
@@ -76,8 +78,8 @@ const quizRoute = {
                 quizzes: res.data[key].quizzes,
                 userId: res.data[key].userId,
               };
+              quizzesContainer.push(quizContainer);
             }
-            quizzesContainer.push(quizContainer);
           }
           context.commit("quizzes", quizzesContainer);
         });
@@ -184,6 +186,32 @@ const quizRoute = {
           })
           .catch((error) => {
             reject(error);
+          });
+      });
+    },
+    //https://the-trivia-api.com/api/questions
+    getMathQuiz(context) {
+      return new Promise((resolve, reject) => {
+        const options = {
+          method: "GET",
+          url: "https://math7.p.rapidapi.com/arithmetic/add",
+          params: { expression: "1+2+3+4+5" },
+          headers: {
+            "X-RapidAPI-Key":
+              "df9b03cf6amsh41632ec7ab2c583p1789f3jsnbe94754f54ea",
+            "X-RapidAPI-Host": "math7.p.rapidapi.com",
+          },
+        };
+
+        axios
+          .request(options)
+          .then(function (response) {
+            resolve(response);
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            reject(error);
+            console.error(error);
           });
       });
     },
